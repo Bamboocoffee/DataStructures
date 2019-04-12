@@ -70,7 +70,7 @@ def buildAirports(listy):
 
     return finalAirports
 
-def buildAircraft():
+def buildAircraft(plane):
     """Builds objects for each of the aircraft - with attributes model, manufacturer, and range.
     Returns a dictionary of this"""
     aircraftDict = {}
@@ -78,10 +78,14 @@ def buildAircraft():
         reader = csv.reader(airplane_file)  # reads the cotents to a variable
         next(reader, None)  # returns none at the end of the file
         for airplane in reader:  # iterates through the reader
-            if airplane[2] == "imperial":
-                airRange = int(airplane[4]) * 1.609
-            else:
-                airRange = airplane[4]
-            aircraftDict[airplane[0]] = Aircraft.Aircraft(airplane[0], airplane[3], airRange)
-    return aircraftDict
+            if airplane[0] == plane:
+                if airplane[2] == "imperial":
+                    airRange = int(airplane[4]) * 1.609
+                else:
+                    airRange = airplane[4]
+                aircraftDict[airplane[0]] = Aircraft.Aircraft(airplane[0], airplane[3], airRange)
+    if len(aircraftDict) == 0:
+        return False
+    else:
+        return aircraftDict
 
