@@ -26,25 +26,18 @@ def findRouteCost(list_of_route_lists, costDict):
 #
 # Time complexity: O(n^2)
 
-
-
-def checkAircraftAllowed(dictAirplane, distanceDict, input_list):
-    """Checks that the aircraft being used can do the route. Returns the routes that are
-    only possible with the aircraft"""
-    planeToFly = input_list[5]
-    planeRange = dictAirplane[planeToFly].max_capacity
-    distanceDict_copy = distanceDict.copy()
-    for j in distanceDict_copy:
-        if distanceDict_copy[j] < int(planeRange):
-            distanceDict.pop(j)
-    finalRouteDict_copy = finalRouteDict.copy()
-    for i in finalRouteDict_copy:
-        toRemove = False
-        for j in distanceDict:
-            x = 0
-            while x < len(i) - 1:
-                if str(i[x] + "_" + i[x + 1]) == j:
-                    toRemove = True
-                x += 1
-        if toRemove:
-            finalRouteDict.pop(i)
+def findLegCosts(leg_distance_dict, airport_object_dict):
+    """Takes in leg dictionary and airport objects. For each leg, it takes the departure airport
+    and gets the local currency conversion rate. It then multiplies it by the distance to get the cost of each leg.
+    Returns a dictionary with the cost of each leg."""
+    costDict = {} #create dictionary to store leg costs
+    for i in leg_distance_dict:
+        try:
+            myKey = i[:3] #strip out first three letters, which will be home airport's code (ex: DUB)
+        except IndexError:
+            print("There's an error in how the dictionary is built! Each key of the leg distance dict should have 'DUB_LHR' style formatting. The program will now fail.")
+        for j in airport_object_dict:
+            if myKey == j: #if key is in dictionary
+                cost = round(float(airport_object_dict[j].exchange_rate()) * float(leg_distance_dict[i]), 2) # multiply exchange rate and distance of airport object, which is value for key
+                costDict[i] = cost #add to new dictionary, with same key as leg_distance_dict
+    return costDict
