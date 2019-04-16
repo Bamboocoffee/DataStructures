@@ -20,9 +20,7 @@ def buildAirports(listy):
                 latitude = airport[7]  # assigns variable
                 templist = [airport_code, country_name, longitude, latitude]
                 airport_list.append(templist)
-    if (len(airport_list)) != 5:
-        return False
-
+                
     country_currency_list = []  # creates a new list
 
     with open('countrycurrency.csv', newline='', encoding="utf8") as countrycurrency_file:  # opens the csv file
