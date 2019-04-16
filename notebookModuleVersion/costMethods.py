@@ -4,20 +4,22 @@
 # Time complexity: O(n^2)
 
 
-def findLegCosts(leg_distance_dict, airport_object_dict):
-    """Takes in leg dictionary and airport objects. For each leg, it takes the departure airport
-    and gets the local currency conversion rate. It then multiplies it by the distance to get the cost of each leg.
-    Returns a dictionary with the cost of each leg."""
-    costDict = {}
-    for i in leg_distance_dict:
-        myKey = i[:3]
-        x = 0
-        for j in airport_object_dict:
-            if myKey == j:
-                cost = round(float(airport_object_dict[j].exchange_rate) * float(leg_distance_dict[i]), 2)
-                costDict[i] = cost
-            x += 1
-    return costDict
+def findRouteCost(list_of_route_lists, costDict):
+    """This returns the total cost of each route - using the cost of each leg. Returned in a dictionary
+    with: Key: route(tuple) & Values: Total cost"""
+    routeCostDict = {} # create dictionary to store total route costs
+    x = 0
+    while x < len(list_of_route_lists): #loop through outer lists
+        i = 0
+        cost = 0
+        while i < (len(list_of_route_lists[x]) - 1): # loop through inner list
+            myKey = str(list_of_route_lists[x][i]) + "_" + str(list_of_route_lists[x][i + 1]) # connect first and second leg of route in format "DUB_LHR"
+            cost += costDict[myKey] #find cost in dictionary of costs for each leg
+            cost = round(cost, 2) #round to nearest 2nd decimal place
+            i += 1
+        routeCostDict[tuple(list_of_route_lists[x])] = cost # add tuple route list as key, value being cost
+        x += 1
+    return routeCostDict 
 
 
 # ### Calculating the Cost of each Rotue
@@ -26,19 +28,23 @@ def findLegCosts(leg_distance_dict, airport_object_dict):
 
 
 
-def findRouteCost(myList, costDict):
-    """This returns the total cost of each route - using the cost of each leg. Returned in a dictionary
-    with: Key: route(tuple) & Values: Total cost"""
-    routeCostDict = {}
-    x = 0
-    while x < len(myList):
-        i = 0
-        cost = 0
-        while i < (len(myList[x]) - 1):
-            myKey = str(myList[x][i]) + "_" + str(myList[x][i + 1])
-            cost += costDict[myKey]
-            cost = round(cost, 2)
-            i += 1
-        routeCostDict[tuple(myList[x])] = cost
-        x += 1
-    return routeCostDict
+def checkAircraftAllowed(dictAirplane, distanceDict, input_list):
+    """Checks that the aircraft being used can do the route. Returns the routes that are
+    only possible with the aircraft"""
+    planeToFly = input_list[5]
+    planeRange = dictAirplane[planeToFly].max_capacity
+    distanceDict_copy = distanceDict.copy()
+    for j in distanceDict_copy:
+        if distanceDict_copy[j] < int(planeRange):
+            distanceDict.pop(j)
+    finalRouteDict_copy = finalRouteDict.copy()
+    for i in finalRouteDict_copy:
+        toRemove = False
+        for j in distanceDict:
+            x = 0
+            while x < len(i) - 1:
+                if str(i[x] + "_" + i[x + 1]) == j:
+                    toRemove = True
+                x += 1
+        if toRemove:
+            finalRouteDict.pop(i)
