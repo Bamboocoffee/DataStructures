@@ -38,6 +38,6 @@ def findLegCosts(leg_distance_dict, airport_object_dict):
             print("There's an error in how the dictionary is built! Each key of the leg distance dict should have 'DUB_LHR' style formatting. The program will now fail.")
         for j in airport_object_dict:
             if myKey == j: #if key is in dictionary
-                cost = round(float(airport_object_dict[j].exchange_rate()) * float(leg_distance_dict[i]), 2) # multiply exchange rate and distance of airport object, which is value for key
+                cost = round(float(airport_object_dict[j].exchange_rate) * float(leg_distance_dict[i]), 2) # multiply exchange rate and distance of airport object, which is value for key
                 costDict[i] = cost #add to new dictionary, with same key as leg_distance_dict
     return costDict
